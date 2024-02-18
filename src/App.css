@@ -1,0 +1,8 @@
+.background {
+  background-image: url("./assets/bg4.png");
+  background-repeat: no-repeat;
+  object-fit: cover;
+  background-position: bottom;
+  background-size: cover;
+  height: 100vh;
+}

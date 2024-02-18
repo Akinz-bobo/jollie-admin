@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "coffee-shop-411810",
+  "private_key_id": "f336c37aaaea57b48828c378037b41a9affb02c7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCSAd0vHZOvSKv\nfDM00cCxewKiRY4smKmdQN73Efvs45dwFE/UA4S0OS03yI0kdJ9nObLZvg/j6LfG\njntCqcVwMFdnY8ChC2yicNC0qywCGdq20vNDiEHNj9QLf56VrR82q2GF48qaRM8X\nS4xMkCInJaZdso9DZhIgtmFH9pjTPBA/TG9flD4MFF437mT4aZ6hX+n56P1dwVbh\na5rM3447r7V5xQwZhKAOUP5BWizouj+d5aux23Wfrc6CdR5NTDYSbWvbVDgoxUIN\nLlV+GI4MIXS7jGwaaU6ZbFOw317mpRa7C+tUPzsI7djxuY65uii1f5s9ORpuUP5p\ns1+l/MJ7AgMBAAECggEAXZwqJ4e1M3wzTb24yI72Wy3Ll5ePCRLnyvLaW86pBbul\nmKXYzu2BD/tqu7GgvDuLIMgu0nafHm/fuManQngdv1AzlQf95TrldaGJFjxRwJNn\njGa5OsVY+2x9PasYpMLdQtCx9TrMQKe95toKeEuMgTNFZWknWVDBlEx8NBnwCfrU\nXGYzSW+/ihzk08d9RLeQU/eMa+GbU9nkMthb+Us307HS6BocVN0+EqahK55IhVbC\nZbXMhTmZCbBw9ffT6d6iOAE5HaID4o2yXXa5RXBin3ZRhPwfqJvpO60wW+5bLVyW\nKnjlCYNExDDZ9JmF8pSuKMh91BaYfkMPgJ/7UXGW9QKBgQDj7S4ZmuuyE3s5kmQt\notVQM/soxaz0EsBYoPOg182NLQA+4JCF91ngtn3JX33HmA8Pt4S+SG0fSm1Kyt7I\npE5ZsRs6fSky2GpdNS9RIYo58gKPO++nO0jm9xzbBjZLyq4UTboQG2qBvHuXilh5\nTPAHs5t+kgNU8q4w1m/mboSLvwKBgQDaNflzV3CpPRZGmPacZRwWM2FvjwJAbu/B\n2Ciy+pwknZQuqUgCf+uT8WICawIQYXfgMRdsTZH5QPfnEdMIcGE7bx6lto7az+sr\n5o9KwwHk03jt6T/+tqKqetqnFzMlDWonTSmmP09feRQiuR9ndZB8ZwJJFSIXRqj6\ne5EbYeLoRQKBgQCLdDi6jeEbyXOhnAITMgfV1JgdMCVMCJULJR8rEB7B/ACkd/21\nGcwyAzYfGX/5uP2uHhjn26R4eq84DbwVgwI1OnlwZdfpNiSN9taGi0Dphzstq/xL\nk6hdOGC9WaWq5c1wusXWyQ93ZX0xEQJk5UAPVkMTQ/8p4HnXg7xffss2PQKBgFhv\n4Z6WhKmCgYGxQtmVvPFed5HgEtiMXY1hjvUizp+kYccbgnzI3XBDNyaludtrtUre\nepDBS3UKmK5EshPMgAu3eGNO/sy90aEkO1TgfecAshUyIGaaHIkda3qm02qj6i7t\nfgDLzd5y0u9Tud+TbTCOCwYVk5B9acTCycegP3dFAoGAMniCO8n+HdvifmGCjJVR\nOymyP7ZeCBXLmTr5QEqjD6HUvPy/BdTrQc2FWCVwe/R1gSACmFN3zbesmM3+GQtl\nBPQCLUHUXj9rJXGsMN+YF747z9wFrrp2A5zSmmPJZTf83EpLT01Osi3zop17EeXt\nJ3mGLQ+dxxxGxgTkjdjlkmM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "coffeemapafrica@coffee-shop-411810.iam.gserviceaccount.com",
+  "client_id": "101253919840715943004",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/coffeemapafrica%40coffee-shop-411810.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
