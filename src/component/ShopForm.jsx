@@ -16,6 +16,7 @@ import LoadingSpinner from "../loading.json"
 import { debounce } from "lodash"
 
 const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
+  const [submitted, setSubmitted] = useState(false)
   const [isSpecial, setIsSpecial] = useState(false)
   const [focused, setFocused] = useState(false)
   const [prediction, setPrediction] = useState([])
@@ -56,6 +57,7 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
   } = methods
 
   const onSubmit = async data => {
+    setSubmitted(true)
     setLoading(true)
     try {
       data = {
@@ -65,18 +67,17 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
         isSpecial,
         name: data.shop_name,
       }
-      console.log(data)
-      // console.log(dataToSend)
       const response = await postShop(data)
       if (response) {
         setLoading(false)
-        // navigate("/tables")
       }
       setLoading(false)
     } catch (error) {
       console.log(error)
       setLoading(false)
     }
+    setSubmitted(false)
+    reset()
   }
 
   const handleChangeEvent = async event => {
@@ -95,7 +96,6 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
   const handleSelectedPrediction = async item => {
     if (item.place_id) {
       const response = await getLocation(item.place_id)
-      console.log("res", item)
       const { geometry, rating, reviews } = response.result
       setValue("long", geometry.location.lng)
       setValue("lat", geometry.location.lat)
@@ -110,7 +110,7 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white  mx-auto my-8 grid grid-cols-2 gap-x-8 w-full border"
+        className="mx-auto my-8 grid grid-cols-2 gap-x-8 w-full "
         onClick={() => {
           setIsOpen(false)
         }}
@@ -224,10 +224,10 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
           name="cover_image"
           errors={errors}
         >
-          <ImageUpload name={"cover_image"} />
+          <ImageUpload name={"cover_image"} sumitted={submitted} />
         </InputFieldWraper>
         <InputFieldWraper title="Images" errors={errors} name="images">
-          <ImageUpload name={"images"} />
+          <ImageUpload name={"images"} sumitted={submitted} />
         </InputFieldWraper>
         <InputFieldWraper
           title="Description"

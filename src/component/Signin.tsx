@@ -22,17 +22,6 @@ const Signin = () => {
           </p>
           <div>
             <SigninForm />
-            <p className="mt-4">
-              Don't have an account?{" "}
-              <Link
-                to={"/signup"}
-                replace={true}
-                preventScrollReset
-                className="text-[#D17842] font-semibold text-xl"
-              >
-                Sign up
-              </Link>
-            </p>
           </div>
         </div>
       </div>

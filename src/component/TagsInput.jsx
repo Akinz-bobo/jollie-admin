@@ -12,8 +12,8 @@ const TagsInput = () => {
   }
 
   return (
-    <div className="">
-      <div className="flex flex-wrap  rounded-md bg-[#EFF0F6] p-2 absolute shadow-sm z-10 w-[460px] overflow-y-auto h-[50px]">
+    <div className="w-full relative ">
+      <div className="flex flex-wrap  rounded-md bg-[#EFF0F6] p-2 absolute shadow-sm z-10  overflow-y-auto h-[50px] w-full gap-2">
         {tags.map(item => (
           <div
             className="flex rounded-full bg-slate-200 w-fit h-fit px-4 py-2 items-center gap-2 text-[18px] font-semibold"
