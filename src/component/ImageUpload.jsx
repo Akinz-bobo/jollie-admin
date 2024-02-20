@@ -1,9 +1,17 @@
 import React, { useRef, useState } from "react"
-import { Upload, X, FileText } from "lucide-react"
+import { Upload, X } from "lucide-react"
 import { useFormContext } from "react-hook-form"
-
+import { imageUploadDB } from "./firebase.config"
+import { v4 } from "uuid"
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage"
 const ImageUpload = ({ name }) => {
-  const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedFile, setSelectedFile] = useState([])
   const { setValue } = useFormContext()
   const inputRef = useRef()
 
@@ -12,24 +20,44 @@ const ImageUpload = ({ name }) => {
   const handleFileChange = event => {
     const files = event.target.files
     if (files && files.length > 0) {
-      const fileToUpload = []
       let length = files.length > 3 ? 3 : files.length
       for (let i = 0; i < length; i++) {
-        fileToUpload.push(files[i])
+        const images = ref(
+          imageUploadDB,
+          "images/" + name + "-" + v4() + "." + files[i].type.split("/")[1]
+        )
+        uploadBytes(images, files[i], {
+          contentType: files[i].type,
+        }).then(val =>
+          getDownloadURL(val.ref).then(url => {
+            setSelectedFile(prev => [...prev, url])
+          })
+        )
       }
-      setSelectedFile([...fileToUpload])
-      setValue(name, [...fileToUpload])
     }
   }
+  setValue(name, [...selectedFile])
 
-  // Function to trigger file input dialog
   const onChooseFile = () => {
     inputRef.current.click()
   }
   // Function to clear selected file  and reset state
-  const clearFileInput = () => {
-    inputRef.current.value = ""
-    setSelectedFile(null)
+  const clearFileInput = url => {
+    const storage = getStorage()
+    // Create a reference to the file to delete
+    const desertRef = ref(
+      storage,
+      `images/${url.split("%2F")[1].split("?")[0]}`
+    )
+
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        setSelectedFile(prev => prev.filter(file => file !== url))
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (
@@ -47,7 +75,7 @@ const ImageUpload = ({ name }) => {
         style={{ display: "none" }}
       />
       {/* Button to trigger the file input dialog */}
-      {!selectedFile && (
+      {!selectedFile.length > 0 && (
         <div
           className="flex items-center bg-gray-200/60 text-gray-500 hover:bg-[#D17842] hover:text-white w-fit py-4 px-8 rounded-md cursor-pointer gap-2"
           onClick={onChooseFile}
@@ -56,32 +84,21 @@ const ImageUpload = ({ name }) => {
           <span className="text-xl font-[500] ">Upload File</span>
         </div>
       )}
+
       {/* Display file information and progress when a file is selected */}
-      {selectedFile && (
+      {selectedFile.length > 0 && (
         <>
-          <div className="flex gap-4 mb-6 py-2 items-center border p-4 shadow-sm rounded-md">
-            <FileText className="text-green-500" />
-            <div className="flex items-center justify-between gap-4 flex-1">
-              <div className="flex-1 flex flex-col gap-1">
-                {/* Display file name and progress bar */}
-                <h6>{selectedFile.name}</h6>
-                <div className="bg-gray-200/50 w-full h-[5px]">
-                  <div className="w-[100%] h-[5px] bg-green-500 rounded-sm transition-all "></div>
+          <div className="flex items-center gap-4">
+            {selectedFile.map((file, ind) => (
+              <div className="relative" key={ind}>
+                <img
+                  src={file}
+                  className="h-[40px] w-[40px] bg-cover object-cover mb-4"
+                />
+                <div onClick={() => clearFileInput(file)}>
+                  <X className="border absolute top-[-10px] right-[-15px] rounded-sm text-red-600 cursor-pointer " />
                 </div>
               </div>
-              {/* Display clear button or upload progress/checkmark */}
-              <div onClick={clearFileInput}>
-                <X className="border rounded-sm text-red-600 cursor-pointer " />
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-1">
-            {selectedFile.map((file, ind) => (
-              <img
-                src={URL.createObjectURL(file)}
-                key={ind}
-                className="h-[40px] w-[40px] bg-cover object-cover mb-4"
-              />
             ))}
           </div>
         </>

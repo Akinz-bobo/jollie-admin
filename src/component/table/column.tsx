@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { TableCell } from "./TableCell"
 import { EditCell } from "./EditCell"
-import { TShop } from "./table"
+import { TShop } from "."
 const columnHelper = createColumnHelper<TShop>()
 export const columns = [
   columnHelper.accessor("shop_name", {
@@ -45,7 +45,6 @@ export const columns = [
 
     meta: {
       type: "select",
-      options: [{ id: 1232, menuItem: "Computer Science", price: "23" }],
     },
   }),
   columnHelper.display({

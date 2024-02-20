@@ -1,17 +1,20 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
+import { useFetch } from "../hooks/useFetch"
 
 export const TableContext = createContext()
 
 export const useTableData = () => {
   const ctx = useContext(TableContext)
-  console.log(ctx)
+  // console.log(ctx)
   return ctx
 }
 
 const TableContextProvider = ({ children }) => {
+  const { getShops } = useFetch()
   const [shopData, setShopData] = useState([])
   const [originData, setOriginData] = useState([])
-  console.log({ originData, shopData })
+
+  // console.log({ originData, shopData })
   const value = {
     shopData,
     originData,

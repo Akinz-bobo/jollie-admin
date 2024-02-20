@@ -1,6 +1,7 @@
 import React, { MouseEvent } from "react"
 
 export const EditCell = ({ row, table }) => {
+  // console.log(row.getValue())
   const meta = table.options.meta
   const setEditedRows = (e: MouseEvent<HTMLButtonElement>) => {
     const elName = e.currentTarget.name

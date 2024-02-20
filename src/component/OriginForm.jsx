@@ -1,14 +1,12 @@
 import React, { useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
 import InputFieldWraper from "./InputFieldWraper"
 import CustomSelect from "./CustomSelect"
 import ImageUpload from "./ImageUpload"
-import { useTableData } from "../contexts/TableContext"
+import { useFetch } from "../hooks/useFetch"
 
 const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
-  const navigate = useNavigate()
-  const { setOriginData } = useTableData()
+  const { postOrigin } = useFetch()
   const methods = useForm({
     defaultValues: {
       origin: "",
@@ -18,14 +16,12 @@ const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
   })
 
   const { errors } = methods.formState
-  const onSubmit = data => {
-    setOriginData(prev => [...prev, data])
-    const formData = new FormData()
-    Object.keys(data).forEach(key => {
-      formData.append(key, data[key])
-    })
-    methods.reset()
-    navigate("/tables")
+  const onSubmit = async data => {
+    console.log(data)
+    const response = await postOrigin({ ...data, name: data.origin })
+    console.log(response)
+    // methods.reset()
+    return null
   }
   return (
     <FormProvider {...methods}>

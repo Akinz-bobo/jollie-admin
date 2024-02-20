@@ -1,20 +1,10 @@
 import "./App.css"
-import Signup from "./component/Signup"
 import Signin from "./component/Signin"
-import CreateNewShopForm from "./component/CreateNewShopForm"
-import FormComponent from "./component/FormComponent"
-import Home from "./component/Home"
 import Lottie from "lottie-react"
 import groovyWalkAnimation from "./lottie1.json"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Table } from "./component/tutorial/table"
-import OptionCard from "./component/OptionCard"
-import TagsInput from "./component/TagsInput"
-import CustomSelect from "./component/CustomSelect"
-import MenuComponent from "./component/MenuComponent"
-import UploadImages from "./component/UploadImages"
-import ImageUpload from "./component/ImageUpload"
+
 function App() {
   const data = [
     "Html",

@@ -8,12 +8,13 @@ import {
   useReactTable,
   SortingState,
 } from "@tanstack/react-table"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import "./table.css"
 import { columns } from "./column"
 import { useTableData } from "../../contexts/TableContext"
 import { useNavigate } from "react-router-dom"
+import { useFetch } from "../../hooks/useFetch"
 
 export type TShop = {
   shop_name: string
@@ -25,13 +26,23 @@ export type TShop = {
   coffee_types: string
   social_link: string
   menu: string
+  _id: string
 }
 
 export const Table = () => {
+  const [data, setData] = useState<TShop[] | []>([])
+  const [originalData, setOriginalData] = useState<TShop[] | []>([])
+  const { deleteShop, updateShop, getShops } = useFetch()
+  const fetchShops = async () => {
+    const results: TShop[] = await getShops()
+    setData([...results])
+    setOriginalData([...results])
+  }
+  useEffect(() => {
+    fetchShops()
+  }, [])
   const navigate = useNavigate()
-  const { shopData } = useTableData()
-  const [data, setData] = useState(() => [...shopData])
-  const [originalData, setOriginalData] = useState(() => [...shopData])
+
   const [editedRows, setEditedRows] = useState({})
   const [filtering, setFiltering] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
@@ -46,7 +57,7 @@ export const Table = () => {
     meta: {
       editedRows,
       setEditedRows,
-      revertData: (rowIndex: number, revert: boolean) => {
+      revertData: async (rowIndex: number, revert: boolean) => {
         if (revert) {
           setData(old =>
             old.map((row, index) =>
@@ -57,6 +68,8 @@ export const Table = () => {
           setOriginalData(old =>
             old.map((row, index) => (index === rowIndex ? data[rowIndex] : row))
           )
+          console.log(data[rowIndex])
+          const response = await updateShop(data[rowIndex])
         }
       },
       updateData: (rowIndex: number, columnId: string, value: string) => {
@@ -73,11 +86,18 @@ export const Table = () => {
         )
       },
 
-      removeRow: (rowIndex: number) => {
+      removeRow: async (rowIndex: number) => {
         const setFilterFunc = (old: TShop[]) =>
           old.filter((_row: TShop, index: number) => index !== rowIndex)
         setData(setFilterFunc)
         setOriginalData(setFilterFunc)
+        try {
+          console.log(data[rowIndex])
+          const response = await deleteShop(data[rowIndex]._id)
+          console.log(response)
+        } catch (error) {
+          console.log(error)
+        }
       },
       removeSelectedRows: (selectedRows: number[]) => {
         const setFilterFunc = (old: TShop[]) =>
@@ -145,32 +165,44 @@ export const Table = () => {
           ))}
         </tbody>
       </table>
-      <div className="flex items-center gap-4 mt-4">
-        <button
-          className={`py-2 px-6 rounded-md outline-none border-none cursor-pointer font-semibold ${
-            Table.getCanPreviousPage()
-              ? "bg-[#D17842] text-white"
-              : "bg-[#EFF0F6]"
-          }`}
-          disabled={!Table.getCanPreviousPage()}
-          onClick={() => {
-            Table.previousPage()
-          }}
-        >
-          Previous Page
-        </button>
-        <button
-          className={`py-2 px-6 rounded-md outline-none border-none cursor-pointer font-semibold ${
-            Table.getCanNextPage() ? "bg-[#D17842] text-white" : "bg-[#EFF0F6]"
-          }`}
-          disabled={!Table.getCanNextPage()}
-          onClick={() => {
-            Table.nextPage()
-          }}
-        >
-          Next Page
-        </button>
-      </div>
+      {!data.length && (
+        <div>
+          <p className="font-semibold text-xl text-center pt-10">
+            No Records Found! Please refresh your browser or create a new
+            record.
+          </p>
+        </div>
+      )}
+      {data.length > 0 && (
+        <div className="flex items-center gap-4 mt-4">
+          <button
+            className={`py-2 px-6 rounded-md outline-none border-none cursor-pointer font-semibold ${
+              Table.getCanPreviousPage()
+                ? "bg-[#D17842] text-white"
+                : "bg-[#EFF0F6]"
+            }`}
+            disabled={!Table.getCanPreviousPage()}
+            onClick={() => {
+              Table.previousPage()
+            }}
+          >
+            Previous Page
+          </button>
+          <button
+            className={`py-2 px-6 rounded-md outline-none border-none cursor-pointer font-semibold ${
+              Table.getCanNextPage()
+                ? "bg-[#D17842] text-white"
+                : "bg-[#EFF0F6]"
+            }`}
+            disabled={!Table.getCanNextPage()}
+            onClick={() => {
+              Table.nextPage()
+            }}
+          >
+            Next Page
+          </button>
+        </div>
+      )}
     </article>
   )
 }

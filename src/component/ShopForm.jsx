@@ -1,5 +1,5 @@
 import { useForm, FormProvider } from "react-hook-form"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import InputFieldWraper from "./InputFieldWraper"
 import CustomSelect from "./CustomSelect"
 import TagsInput from "./TagsInput"
@@ -9,14 +9,23 @@ import { useShopFormMetaData } from "../contexts/FormContext"
 import { useTags } from "../contexts/MenuContext"
 import { useTableData } from "../contexts/TableContext"
 import { useNavigate } from "react-router-dom"
+import { useFetch } from "../hooks/useFetch"
+import Modal from "./Modal"
+import Lottie from "lottie-react"
+import LoadingSpinner from "../loading.json"
+import { debounce } from "lodash"
 
 const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
   const [isSpecial, setIsSpecial] = useState(false)
   const [focused, setFocused] = useState(false)
+  const [prediction, setPrediction] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { tags, menuItems, clearEntries } = useTags()
   const { setShopData } = useTableData()
-
+  const nameRef = useRef()
   const navigate = useNavigate()
+  const { getPrediction, getLocation, postShop } = useFetch()
   const ctx = useShopFormMetaData()
   const methods = useForm({
     defaultValues: {
@@ -30,6 +39,11 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
       coffee_types: [],
       social_link: "",
       menu: [],
+      long: "",
+      lat: "",
+      rating: 0,
+      ratingCount: 0,
+      name: "",
     },
   })
 
@@ -37,26 +51,69 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
     handleSubmit,
     register,
     reset,
+    setValue,
     formState: { errors },
   } = methods
 
-  const onSubmit = data => {
-    data = { ...data, menu: menuItems, coffee_types: tags, isSpecial }
-    setShopData(prev => [...prev, data])
-    const formData = new FormData()
-    Object.keys(data).forEach(key => {
-      formData.append(key, data[key])
-    })
-    clearEntries()
-    reset()
-    navigate("/tables")
+  const onSubmit = async data => {
+    setLoading(true)
+    try {
+      data = {
+        ...data,
+        menu: menuItems,
+        coffee_types: tags,
+        isSpecial,
+        name: data.shop_name,
+      }
+      console.log(data)
+      // console.log(dataToSend)
+      const response = await postShop(data)
+      if (response) {
+        setLoading(false)
+        // navigate("/tables")
+      }
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
+  const handleChangeEvent = async event => {
+    setIsOpen(true)
+    try {
+      const result = await getPrediction(event.target.value)
+      if (result?.predictions?.length > 0) {
+        setPrediction(prv => [...result.predictions])
+      }
+    } catch (error) {
+      console.log(error)
+      setIsOpen(false)
+    }
+  }
+
+  const handleSelectedPrediction = async item => {
+    if (item.place_id) {
+      const response = await getLocation(item.place_id)
+      console.log("res", item)
+      const { geometry, rating, reviews } = response.result
+      setValue("long", geometry.location.lng)
+      setValue("lat", geometry.location.lat)
+      setValue("address", item.description)
+      setValue("rating", rating || 5.0)
+      setValue("ratingCount", reviews.length || 30)
+    }
+    setIsOpen(false)
   }
 
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white  mx-auto my-8 grid grid-cols-2 gap-x-8"
+        className="bg-white  mx-auto my-8 grid grid-cols-2 gap-x-8 w-full border"
+        onClick={() => {
+          setIsOpen(false)
+        }}
       >
         <InputFieldWraper title="Category" name="category" errors={errors}>
           <CustomSelect
@@ -82,13 +139,33 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
         </InputFieldWraper>
 
         <InputFieldWraper title="Address" errors={errors} name="address">
-          <input
-            type="text"
-            id="address"
-            placeholder="Shop Address"
-            className={`form-input bg-[#EFF0F6] px-4 py-3 rounded-md w-full outline-none text-xl `}
-            {...register("address")}
-          />
+          <div className="relative w-full">
+            <input
+              ref={nameRef}
+              type="text"
+              id="address"
+              placeholder="Shop Address"
+              className={`form-input bg-[#EFF0F6] px-4 py-3 rounded-md w-full outline-none text-xl `}
+              {...register("address", {
+                onChange: debounce(handleChangeEvent, 500),
+              })}
+            />
+            {isOpen ? (
+              <Modal>
+                {prediction.length > 0 &&
+                  prediction.map(item => (
+                    <div
+                      onClick={() => {
+                        handleSelectedPrediction(item)
+                      }}
+                      className="hover:bg-[#D17842] w-full p-4 rounded-md hover:text-white"
+                    >
+                      {item.description.slice(0, 50)}
+                    </div>
+                  ))}
+              </Modal>
+            ) : null}
+          </div>
         </InputFieldWraper>
 
         <InputFieldWraper
@@ -131,6 +208,7 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
           <input
             type="text"
             id="social_link"
+            name="social_link"
             placeholder="
             Instagram Handle"
             className={`form-input bg-[#EFF0F6] px-4 py-3 rounded-md w-full outline-none text-xl `}
@@ -193,12 +271,22 @@ const ShopForm = ({ selected, setSelected, CATEGORIES }) => {
               </span>
             </div>
           </div>
-          <button
-            type="submit"
-            className="py-2 px-8 w-full my-8 rounded-md border outline-none cursor-pointer h-14  text-xl bg-[#D17842] text-white"
-          >
-            Submit
-          </button>
+          {loading ? (
+            <Lottie
+              animationData={LoadingSpinner}
+              loop={true}
+              size={100}
+              // style={{ height: "80px" }}
+              className="border p-0 h-[80px] rounded-md cursor-pointer"
+            />
+          ) : (
+            <button
+              type="submit"
+              className="py-2 px-8 w-full my-8 rounded-md border outline-none cursor-pointer h-14  text-xl bg-[#D17842] text-white"
+            >
+              Submit
+            </button>
+          )}
         </div>
       </form>
     </FormProvider>
