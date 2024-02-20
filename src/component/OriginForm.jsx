@@ -4,8 +4,10 @@ import InputFieldWraper from "./InputFieldWraper"
 import CustomSelect from "./CustomSelect"
 import ImageUpload from "./ImageUpload"
 import { useFetch } from "../hooks/useFetch"
+import { useToast } from "../contexts/ToastContext"
 
 const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
+  const toast = useToast()
   const { postOrigin } = useFetch()
   const methods = useForm({
     defaultValues: {
@@ -17,11 +19,9 @@ const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
 
   const { errors } = methods.formState
   const onSubmit = async data => {
-    console.log(data)
     const response = await postOrigin({ ...data, name: data.origin })
-    console.log(response)
-    // methods.reset()
-    return null
+    toast.open("Origin added successfully!")
+    methods.reset()
   }
   return (
     <FormProvider {...methods}>
