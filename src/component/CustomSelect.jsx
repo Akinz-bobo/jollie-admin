@@ -6,7 +6,7 @@ const CustomSelect = ({ data = [], selected = "", setSelected, title }) => {
 
   const [open, setOpen] = useState(false)
   return (
-    <div className="w-full font-medium relativ ">
+    <div className="w-full font-medium relative ">
       <div
         onClick={() => setOpen(!open)}
         className={`${!selected && "text-gray-700"} 

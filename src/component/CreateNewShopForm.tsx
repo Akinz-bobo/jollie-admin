@@ -32,7 +32,7 @@ const CreateNewShopForm = () => {
         </h3>
       </div>
 
-      <div className="bg-white w-[60%] mx-auto my-8 ">
+      <div className="bg-white w-[70%] mx-auto my-8 ">
         {selected === "Shop" ? (
           <ShopForm
             selected={selected}

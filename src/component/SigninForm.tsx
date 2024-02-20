@@ -83,7 +83,7 @@ const SigninForm = () => {
       <button
         disabled={isSubmitting}
         type="submit"
-        className={`bg-[#D17842] text-white py-4 rounded w-full text-xl ${
+        className={`bg-[#D17842] text-white mt-4 py-4 rounded w-full text-xl ${
           isSubmitting && " cursor-not-allowed"
         } `}
       >
