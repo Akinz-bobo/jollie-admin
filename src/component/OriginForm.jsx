@@ -8,6 +8,7 @@ import { useToast } from "../contexts/ToastContext"
 
 const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
   const toast = useToast()
+  const [submitted, setSubmitted] = useState(false)
   const { postOrigin } = useFetch()
   const methods = useForm({
     defaultValues: {
@@ -19,9 +20,11 @@ const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
 
   const { errors } = methods.formState
   const onSubmit = async data => {
+    setSubmitted(true)
     const response = await postOrigin({ ...data, name: data.origin })
     toast.open("Origin added successfully!")
     methods.reset()
+    setSubmitted(false)
   }
   return (
     <FormProvider {...methods}>
@@ -56,7 +59,7 @@ const OriginForm = ({ selected, setSelected, CATEGORIES }) => {
           errors={errors}
           name="cover_image"
         >
-          <ImageUpload name={"cover_image"} />
+          <ImageUpload name={"cover_image"} sumitted={submitted} />
         </InputFieldWraper>
         <InputFieldWraper
           title="Description"

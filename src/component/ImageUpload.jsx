@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Upload, X } from "lucide-react"
 import { useFormContext } from "react-hook-form"
 import { imageUploadDB } from "./firebase.config"
@@ -10,13 +10,15 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage"
-const ImageUpload = ({ name }) => {
+const ImageUpload = ({ name, sumitted }) => {
   const [selectedFile, setSelectedFile] = useState([])
   const { setValue } = useFormContext()
   const inputRef = useRef()
 
   // State variables for tracking file-reated information
-
+  useEffect(() => {
+    setSelectedFile([])
+  }, [sumitted])
   const handleFileChange = event => {
     const files = event.target.files
     if (files && files.length > 0) {

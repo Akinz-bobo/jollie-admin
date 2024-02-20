@@ -113,6 +113,7 @@ export const Table = () => {
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   })
+  console.log(data)
   return (
     <article className="table-container w-[90%] mx-auto mt-3">
       <div className="flex items-center w-full">
